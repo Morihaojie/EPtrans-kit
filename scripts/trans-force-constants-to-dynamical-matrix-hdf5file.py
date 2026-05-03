@@ -2,8 +2,9 @@ import os
 import time
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
+script_abs = Path(__file__).resolve()
+project_root = script_abs.parent.parent
+sys.path.insert(0, str(project_root))
 from eptransk.interface import Interface
 from eptransk.hdf5editor import HDF5_Editor
 
