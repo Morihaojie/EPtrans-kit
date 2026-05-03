@@ -1,6 +1,12 @@
 import h5py
 import os
 import numpy as np
+import sys
+from pathlib import Path
+script_abs = Path(__file__).resolve()
+project_root = script_abs.parent.parent
+sys.path.insert(0, str(project_root))
+from eptransk.matrixeditor import Matrix_Editor
 
 class HDF5_Editor():
     def __init__(self):
@@ -269,7 +275,8 @@ class HDF5_Editor():
                 print('有key不存在,请查看'+add_hdf5_index_structure)
 
     def write_dynamical_matrix_sparse_data_to_hdf5(self,hdf5filename,input_symmetrized_numpy_matrix):
-        indice,row_start,shape,value = self.change_symmetrized_numpy_matrix_to_dynamical_matrix_sparse_data(input_symmetrized_numpy_matrix)
+        ME = Matrix_Editor()
+        indice,row_start,shape,value = ME.change_symmetrized_numpy_matrix_to_dynamical_matrix_sparse_data(input_symmetrized_numpy_matrix)
         filestr = '/DynamicalMatrix_0/dynamical_matrix/matrix_vector/0/'
         self.write_hdf5(filestr+'indices',indice,hdf5filename,'int32',1)
         self.write_hdf5(filestr+'row_starts',row_start,hdf5filename,'int32',1)
@@ -284,7 +291,8 @@ class HDF5_Editor():
         self.write_hdf5(filestr+'values',value,hdf5filename,'',1)
 
     def write_sparse_data_to_hdf5(self,read_filestr,read_hdf5filename,write_filestr,write_hdf5filename):
-        indice,row_start,shape,value = self.trans_new_numpy_data_to_numpy_data_by_filestr(read_filestr,read_hdf5filename)
+        ME=Matrix_Editor()
+        indice,row_start,shape,value = ME.trans_new_numpy_data_to_numpy_data_by_filestr(read_filestr,read_hdf5filename)
         self.write_hdf5(write_filestr+'indices',indice,write_hdf5filename,'int32',1)
         self.write_hdf5(write_filestr+'row_starts',row_start,write_hdf5filename,'int32',1)
         self.write_hdf5(write_filestr+'shape',shape,write_hdf5filename,'int32',1)
@@ -544,3 +552,4 @@ class HDF5_Editor():
             if full_index == translation_vectors[i]:
                 obtain_index = i+1
         return obtain_index
+    
