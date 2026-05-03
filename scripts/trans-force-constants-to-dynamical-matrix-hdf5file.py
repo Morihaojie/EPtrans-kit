@@ -13,7 +13,7 @@ def frc_to_dynamical_numpy_matrix_gulp(repeat_times,**kwargs):
     repeat_times_num = int(repeat_times[0])*int(repeat_times[1])*int(repeat_times[2])
     coordinates_arrays = IF.get_coordinates_arrays_from_frc_gulp()
     force_constants_arrays = IF.get_force_constants_arrays_from_frc_gulp()
-    reordered_coordinates_arrays = IF.get_reordered_coordinates()
+    reordered_coordinates_arrays = IF.get_coordinates_arrays_from_pos()
     reshape = IF.reshape(reordered_coordinates_arrays,coordinates_arrays)
     reordered_force_constants_arrays = IF.reorder_force_constants_arrays(reshape,force_constants_arrays)
     force_constants_numpy_matrix = IF.trans_force_constants_arrays_to_force_constants_numpy_matrix(reordered_force_constants_arrays,repeat_times_num)
@@ -25,17 +25,14 @@ def fc_to_dynamical_numpy_matrix(repeat_times,**kwargs):
     repeat_times_num = int(repeat_times[0])*int(repeat_times[1])*int(repeat_times[2])
     force_constants_arrays = IF.get_force_constants_arrays_from_fc()
     coordinates_arrays = IF.get_coordinates_arrays_from_pos()
-    reordered_coordinates_arrays = IF.get_reordered_coordinates()
-    reshape = IF.reshape(reordered_coordinates_arrays,coordinates_arrays)
-    reordered_force_constants_arrays = IF.reorder_force_constants_arrays(reshape,force_constants_arrays)
-    force_constants_numpy_matrix = IF.trans_force_constants_arrays_to_force_constants_numpy_matrix(reordered_force_constants_arrays,repeat_times_num)
-    dynamical_numpy_matrix = IF.trans_force_constants_numpy_matrix_to_dynamical_numpy_matrix(force_constants_numpy_matrix,reordered_coordinates_arrays)
+    force_constants_numpy_matrix = IF.trans_force_constants_arrays_to_force_constants_numpy_matrix(force_constants_arrays,repeat_times_num)
+    dynamical_numpy_matrix = IF.trans_force_constants_numpy_matrix_to_dynamical_numpy_matrix(force_constants_numpy_matrix,coordinates_arrays)
     return dynamical_numpy_matrix
 
 def frc_to_symmetrized_dynamical_numpy_matrix_gulp(pyfilename,repeat_times,**kwargs):
     IF = Interface()
     repeat_times_num = int(repeat_times[0])*int(repeat_times[1])*int(repeat_times[2])
-    repeat_times_str = '"'+repeat_times_num[0]+' '+repeat_times_num[1]+' '+repeat_times_num[2]+'"'
+    repeat_times_str = '"'+repeat_times[0]+' '+repeat_times[1]+' '+repeat_times[2]+'"'
     force_constants_arrays = IF.get_force_constants_arrays_from_frc_gulp()
     coordinates_arrays = IF.get_coordinates_arrays_from_frc_gulp()
     lattice_parameters = IF.get_coordinates_arrays_and_lattice_parameters_from_py(pyfilename)
