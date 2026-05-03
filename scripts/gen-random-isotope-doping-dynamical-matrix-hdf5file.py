@@ -52,9 +52,8 @@ def write_new_dynamical_matrix_sparse_data_to_hdf5file_device(read_hdf5filename,
 def random_gen_replaced_mass_dynamical_matrix_hdf5_by_replaceable_atoms_list(prefix,check_dir_strs,read_hdf5filename,replaceable_atoms_list,replaced_atoms_num,random_num,threads_num):
     IF = Interface()
     filestr = '/DynamicalMatrix_0/dynamical_matrix/matrix_vector/0/'
-    hdf5filename = read_hdf5filename
     ME = Matrix_Editor()
-    numpy_matrix,shape = ME.change_sparse_to_numpy_matrix_by_filestr(filestr,hdf5filename)
+    numpy_matrix,shape = ME.change_sparse_to_numpy_matrix_by_filestr(filestr,read_hdf5filename)
     completed_numpy_matrix = ME.add_across_data_to_numpy_matrix_for_dynamical_matrix(numpy_matrix)
     elements,coordinates_arrays,lattice_parameters = IF.get_coordinates_arrays_and_lattice_parameters_from_hdf5_device('DeviceConfiguration_0',read_hdf5filename)
     replace_tag_list = [1]*len(elements)
@@ -118,7 +117,6 @@ replaceable_atoms_list = [16,  17,  18,  21,  22,  23,  24,  25,  26,  29,
                                              101, 104, 105, 106, 107, 110, 111, 112, 113, 114,
                                              115, 118, 119, 120, 121, 122, 123, 126, 127, 128]
 read_hdf5filename=r'C:\Users\name\Desktop\read_hdf5filename.hdf5'
-# check_dir_strs = []
 common_params = {
     # 生成文件前缀
     "prefix": 'test1',
@@ -130,5 +128,4 @@ common_params = {
     # 并行线程数
     "threads_num": 10
 }
-print(read_hdf5filename)
 random_gen_replaced_mass_dynamical_matrix_hdf5_by_replaceable_atoms_list(common_params['prefix'],common_params['check_dir_strs'],read_hdf5filename,replaceable_atoms_list,common_params['replaced_atoms_num'],common_params['random_num'],common_params['threads_num'])
