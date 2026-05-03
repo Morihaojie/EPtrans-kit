@@ -4,10 +4,12 @@ import sys
 import random
 import threading
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
+script_abs = Path(__file__).resolve()
+project_root = script_abs.parent.parent
+sys.path.insert(0, str(project_root))
 from eptransk.interface import Interface
 from eptransk.hdf5editor import HDF5_Editor
+from eptransk.matrixeditor import Matrix_Editor
 
 def write_new_dynamical_matrix_sparse_data_to_hdf5file_device(read_hdf5filename,write_hdf5filename,indice,row_start,shape,value):
     FC=HDF5_Editor()
@@ -49,10 +51,10 @@ def write_new_dynamical_matrix_sparse_data_to_hdf5file_device(read_hdf5filename,
 
 def random_gen_replaced_mass_dynamical_matrix_hdf5_by_replaceable_atoms_list(prefix,check_dir_strs,read_hdf5filename,replaceable_atoms_list,replaced_atoms_num,random_num,threads_num):
     IF = Interface()
-    HDF5 = HDF5_Editor()
     filestr = '/DynamicalMatrix_0/dynamical_matrix/matrix_vector/0/'
-    numpy_matrix,shape = HDF5.change_sparse_to_numpy_matrix_by_filestr(filestr,read_hdf5filename)
-    completed_numpy_matrix = HDF5.add_across_data_to_numpy_matrix_for_dynamical_matrix(numpy_matrix)
+    print(read_hdf5filename)
+    numpy_matrix,shape = Matrix_Editor.change_sparse_to_numpy_matrix_by_filestr(filestr,read_hdf5filename)
+    completed_numpy_matrix = Matrix_Editor.add_across_data_to_numpy_matrix_for_dynamical_matrix(numpy_matrix)
     elements,coordinates_arrays,lattice_parameters = IF.get_coordinates_arrays_and_lattice_parameters_from_hdf5_device('DeviceConfiguration_0',read_hdf5filename)
     replace_tag_list = [1]*len(elements)
     for replaceable in replaceable_atoms_list:
@@ -114,6 +116,7 @@ replaceable_atoms_list = [16,  17,  18,  21,  22,  23,  24,  25,  26,  29,
                                              101, 104, 105, 106, 107, 110, 111, 112, 113, 114,
                                              115, 118, 119, 120, 121, 122, 123, 126, 127, 128]
 read_hdf5filename=r'C:\Users\name\Desktop\read_hdf5filename.hdf5'
+read_hdf5filename=r'C:\Users\CXH\.vnl\testfc\ARMN21-PX-ZXXZ0-Fe-TSP.hdf5'
 common_params = {
     # 生成文件前缀
     "prefix": 'test1',
@@ -125,4 +128,5 @@ common_params = {
     # 并行线程数
     "threads_num": 10
 }
+
 random_gen_replaced_mass_dynamical_matrix_hdf5_by_replaceable_atoms_list(common_params['prefix'],common_params['check_dir_strs'],read_hdf5filename,replaceable_atoms_list,common_params['replaced_atoms_num'],common_params['random_num'],common_params['threads_num'])
