@@ -45,16 +45,14 @@ class HDF5_Editor():
             else:
                 continue
         return wanted_datas
-
+    
     def read_hdf5(self,wanted_data_path,hdf5filename):
-        filepath = os.path.join(self.filepath, hdf5filename)
-        f = h5py.File(filepath, 'r')
-        try:
-            return_data = f[wanted_data_path][:]
-        except:
-            return_data = f[wanted_data_path][()]
-        f.close()
-        return return_data
+        if os.path.isabs(hdf5filename) or os.path.sep in hdf5filename:
+            filepath = hdf5filename
+        else:
+            filepath = os.path.join(self.filepath,hdf5filename)        
+        with h5py.File(filepath, 'r') as f:
+            return f[wanted_data_path][()]
 
     def read_numpy_data_from_hdf5(self,hdf5filename):
         filestr = '/DynamicalMatrix_0/dynamical_matrix/matrix_vector/0/'
@@ -65,12 +63,23 @@ class HDF5_Editor():
         return indice,row_start,shape,value
 
     def read_numpy_data_from_hdf5_by_filestr(self,filestr,hdf5filename):
+        if not filestr.endswith('/'):
+            filestr = filestr + '/'        
         indice = self.read_hdf5(filestr+'indices',hdf5filename)
         row_start = self.read_hdf5(filestr+'row_starts',hdf5filename)
         shape = self.read_hdf5(filestr+'shape',hdf5filename)
         value = self.read_hdf5(filestr+'values',hdf5filename)
         return indice,row_start,shape,value
-
+        
+    def read_complex_data_from_hdf5_by_filestr(self,filestr,hdf5filename):
+        if not filestr.endswith('/'):
+            filestr = filestr + '/'
+        data = self.read_data_from_hdf5_complex(filestr+'data', hdf5filename)
+        indices = self.read_data_from_hdf5_complex(filestr+'indices', hdf5filename)
+        indptr = self.read_data_from_hdf5_complex(filestr+'indptr', hdf5filename)
+        shape = self.read_data_from_hdf5_complex(filestr+'shape', hdf5filename)
+        return data,indices,indptr,shape
+    
     def copy_hdf5(self,read_hdf5filename,read_data_path,write_hdf5filename,write_data_path):             
         read_filepath = os.path.join(self.filepath, read_hdf5filename)
         write_filepath = os.path.join(self.filepath, write_hdf5filename)
@@ -288,6 +297,10 @@ class HDF5_Editor():
     def write_sparse_data_to_hdf5(self,read_filestr,read_hdf5filename,write_filestr,write_hdf5filename):
         from .matrixeditor import Matrix_Editor
         ME=Matrix_Editor()
+        if not read_filestr.endswith('/'):
+            read_filestr = read_filestr + '/'
+        if not write_filestr.endswith('/'):
+            write_filestr = write_filestr + '/'                          
         indice,row_start,shape,value = ME.trans_new_numpy_data_to_numpy_data_by_filestr(read_filestr,read_hdf5filename)
         self.write_hdf5(write_filestr+'indices',indice,write_hdf5filename,'int32',1)
         self.write_hdf5(write_filestr+'row_starts',row_start,write_hdf5filename,'int32',1)
