@@ -70,14 +70,14 @@ class HDF5_Editor():
         shape = self.read_hdf5(filestr+'shape',hdf5filename)
         value = self.read_hdf5(filestr+'values',hdf5filename)
         return indice,row_start,shape,value
-        
+
     def read_complex_data_from_hdf5_by_filestr(self,filestr,hdf5filename):
         if not filestr.endswith('/'):
             filestr = filestr + '/'
-        data = self.read_data_from_hdf5_complex(filestr+'data', hdf5filename)
-        indices = self.read_data_from_hdf5_complex(filestr+'indices', hdf5filename)
-        indptr = self.read_data_from_hdf5_complex(filestr+'indptr', hdf5filename)
-        shape = self.read_data_from_hdf5_complex(filestr+'shape', hdf5filename)
+        data = self.read_hdf5(filestr+'data', hdf5filename)
+        indices = self.read_hdf5(filestr+'indices', hdf5filename)
+        indptr = self.read_hdf5(filestr+'indptr', hdf5filename)
+        shape = self.read_hdf5(filestr+'shape', hdf5filename)
         return data,indices,indptr,shape
     
     def copy_hdf5(self,read_hdf5filename,read_data_path,write_hdf5filename,write_data_path):             
@@ -561,4 +561,27 @@ class HDF5_Editor():
             if full_index == translation_vectors[i]:
                 obtain_index = i+1
         return obtain_index
-    
+    def read_electron_phonon_coupling_matrix_part(self,phonon_mode_index,band_index1,band_index2,read_hdf5filename):
+        from .matrixeditor import Matrix_Editor
+        ME=Matrix_Editor()
+        filestr = '/ElectronPhononCoupling_0/coupling_matrix_bloch_basis/0/'+str(phonon_mode_index)+'/'+str(band_index1)+'/'+str(band_index2)+'/'
+        data, indices, indptr, shape = self.read_complex_data_from_hdf5_by_filestr(filestr,read_hdf5filename)
+        completed_electron_phonon_coupling_numpy_matrix_part = ME.change_sparse_complex_data_to_numpy_matrix(data,indices,indptr,shape)
+        return completed_electron_phonon_coupling_numpy_matrix_part
+
+    def read_eigen_values_k_minus_q_part(self,band_index,read_hdf5filename):
+        from .matrixeditor import Matrix_Editor
+        ME=Matrix_Editor()
+        filestr = '/ElectronPhononCoupling_0/eigenvalues_k_minus_q/0/'+str(band_index)+'/'
+        data, indices, indptr, shape = self.read_complex_data_from_hdf5_by_filestr(filestr,read_hdf5filename)
+        completed_eigen_values_k_minus_q_numpy_matrix_part = ME.change_sparse_complex_data_to_numpy_matrix(data,indices,indptr,shape)
+        return completed_eigen_values_k_minus_q_numpy_matrix_part
+
+    def read_eigen_values_k_plus_q_part(self,band_index,read_hdf5filename):
+        from .matrixeditor import Matrix_Editor
+        ME=Matrix_Editor()
+        filestr = '/ElectronPhononCoupling_0/eigenvalues_k_plus_q/0/'+str(band_index)+'/'
+        data, indices, indptr, shape = self.read_complex_data_from_hdf5_by_filestr(filestr,read_hdf5filename)
+        completed_eigen_values_k_plus_q_numpy_matrix_part = ME.change_sparse_complex_data_to_numpy_matrix(data,indices,indptr,shape)
+        return completed_eigen_values_k_plus_q_numpy_matrix_part
+        
