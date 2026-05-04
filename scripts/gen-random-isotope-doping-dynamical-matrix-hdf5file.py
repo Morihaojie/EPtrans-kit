@@ -116,7 +116,8 @@ replaceable_atoms_list = [16,  17,  18,  21,  22,  23,  24,  25,  26,  29,
                                               82,  87,  88,  90,  91,  92,  93,  96,  97, 100,
                                              101, 104, 105, 106, 107, 110, 111, 112, 113, 114,
                                              115, 118, 119, 120, 121, 122, 123, 126, 127, 128]
-read_hdf5filename=r'C:\Users\name\Desktop\read_hdf5filename.hdf5'
+# read_hdf5filename = r'C:\Users\name\Desktop\dm_hdf5filename.hdf5'
+read_hdf5filename = r'dm_hdf5filename.hdf5'
 common_params = {
     # 生成文件前缀
     "prefix": 'test1',
