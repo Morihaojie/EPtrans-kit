@@ -1,10 +1,4 @@
 import numpy as np
-import sys
-from pathlib import Path
-script_abs = Path(__file__).resolve()
-project_root = script_abs.parent.parent
-sys.path.insert(0, str(project_root))
-from eptransk.hdf5editor import HDF5_Editor
 
 class Matrix_Editor():
     def change_sparse_data_to_numpy_matrix(self,indice,row_start,shape,value):
@@ -22,6 +16,7 @@ class Matrix_Editor():
         return numpy_matrix,shape
 
     def change_sparse_to_numpy_matrix_by_filestr(self,filestr,hdf5filename):
+        from .hdf5editor import HDF5_Editor
         FC=HDF5_Editor()
         indice,row_start,shape,value = FC.read_numpy_data_from_hdf5_by_filestr(filestr,hdf5filename)
         row_num = shape[0]
@@ -38,6 +33,7 @@ class Matrix_Editor():
         return numpy_matrix,shape
 
     def change_sparse_to_numpy_matrix(self,hdf5filename):
+        from .hdf5editor import HDF5_Editor
         FC=HDF5_Editor()
         indice,row_start,shape,value = FC.read_numpy_data_from_hdf5(hdf5filename)
         row_num = shape[0]
@@ -179,6 +175,7 @@ class Matrix_Editor():
         return completed_mid_block
 
     def trans_new_numpy_data_to_numpy_data_by_filestr(self,filestr,read_hdf5filename):
+        from .hdf5editor import HDF5_Editor
         FC=HDF5_Editor()
         indices = FC.read_hdf5_wanted_data(filestr,'indices',read_hdf5filename)
         indice = []
