@@ -18,6 +18,8 @@ class Matrix_Editor():
     def change_sparse_to_numpy_matrix_by_filestr(self,filestr,hdf5filename):
         from .hdf5editor import HDF5_Editor
         FC=HDF5_Editor()
+        if not filestr.endswith('/'):
+            filestr = filestr + '/'                
         indice,row_start,shape,value = FC.read_numpy_data_from_hdf5_by_filestr(filestr,hdf5filename)
         row_num = shape[0]
         column_num = shape[1]
@@ -177,6 +179,8 @@ class Matrix_Editor():
     def trans_new_numpy_data_to_numpy_data_by_filestr(self,filestr,read_hdf5filename):
         from .hdf5editor import HDF5_Editor
         FC=HDF5_Editor()
+        if not filestr.endswith('/'):
+            filestr = filestr + '/'                
         indices = FC.read_hdf5_wanted_data(filestr,'indices',read_hdf5filename)
         indice = []
         value = []
@@ -192,3 +196,14 @@ class Matrix_Editor():
         value = np.array(value)
         row_start = np.array(row_start)
         return indice,row_start,shape,value
+    
+    def change_sparse_complex_data_to_numpy_matrix(self,data,indices,indptr,shape):
+        rows_num, cols_num = shape
+        completed_numpy_matrix = np.zeros(shape, dtype=data.dtype)
+        for i in range(rows_num):
+            start = indptr[i]
+            end = indptr[i+1]
+            for j in range(start, end):
+                col = indices[j]
+                completed_numpy_matrix[i, col] = data[j]
+        return completed_numpy_matrix
